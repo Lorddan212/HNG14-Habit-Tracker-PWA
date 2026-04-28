@@ -7,12 +7,10 @@ import { Eye, EyeOff } from "lucide-react";
 import { createId, getUsers, saveSession, saveUsers } from "@/lib/storage";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { authContent } from "@/content/auth";
-import type { ProfiledUser } from "@/lib/profile";
+import type { User } from "@/types/auth";
 
 export function SignupForm() {
   const router = useRouter();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -40,10 +38,8 @@ export function SignupForm() {
       return;
     }
 
-    const user: ProfiledUser = {
+    const user: User = {
       id: createId("user"),
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
       email: normalizedEmail,
       password,
       createdAt: new Date().toISOString(),
@@ -60,38 +56,6 @@ export function SignupForm() {
   return (
     <AuthShell title={authContent.signup.title} subtitle={authContent.signup.subtitle}>
       <form className="space-y-5" onSubmit={handleSubmit}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <label className="block text-sm font-extrabold text-ink" htmlFor="signup-first-name">
-              First Name
-            </label>
-            <input
-              autoComplete="given-name"
-              className="input-shell focus-visible-ring"
-              data-testid="auth-signup-first-name"
-              id="signup-first-name"
-              onChange={(event) => setFirstName(event.target.value)}
-              placeholder="Amara"
-              value={firstName}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-extrabold text-ink" htmlFor="signup-last-name">
-              Surname
-            </label>
-            <input
-              autoComplete="family-name"
-              className="input-shell focus-visible-ring"
-              data-testid="auth-signup-last-name"
-              id="signup-last-name"
-              onChange={(event) => setLastName(event.target.value)}
-              placeholder="Okafor"
-              value={lastName}
-            />
-          </div>
-        </div>
-
         <div className="space-y-2">
           <label className="block text-sm font-extrabold text-ink" htmlFor="signup-email">
             Email

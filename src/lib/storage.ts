@@ -1,6 +1,5 @@
-import type { Session } from "@/types/auth";
+import type { Session, User } from "@/types/auth";
 import type { Habit } from "@/types/habit";
-import type { ProfiledUser } from "@/lib/profile";
 
 export const STORAGE_KEYS = {
   users: "habit-tracker-users",
@@ -33,6 +32,80 @@ function writeJson<T>(key: string, value: T): void {
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isString(value: unknown): value is string {
+  return typeof value === "string";
+}
+
+function compactDates(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return Array.from(new Set(value.filter(isString)));
+}
+
+function toStoredUser(value: unknown): User | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const { id, email, password, createdAt } = value;
+
+  if (!isString(id) || !isString(email) || !isString(password) || !isString(createdAt)) {
+    return null;
+  }
+
+  return {
+    id,
+    email,
+    password,
+    createdAt,
+  };
+}
+
+function toStoredHabit(value: unknown): Habit | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const { id, userId, name, createdAt } = value;
+  const description = isString(value.description) ? value.description : "";
+
+  if (!isString(id) || !isString(userId) || !isString(name) || !isString(createdAt)) {
+    return null;
+  }
+
+  return {
+    id,
+    userId,
+    name,
+    description,
+    frequency: "daily",
+    createdAt,
+    completions: compactDates(value.completions),
+  };
+}
+
+function compactItems<T>(value: unknown, mapper: (item: unknown) => T | null): T[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.reduce<T[]>((items, item) => {
+    const mapped = mapper(item);
+
+    if (mapped) {
+      items.push(mapped);
+    }
+
+    return items;
+  }, []);
+}
+
 export function createId(prefix: string): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return `${prefix}-${crypto.randomUUID()}`;
@@ -41,12 +114,15 @@ export function createId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-export function getUsers(): ProfiledUser[] {
-  return readJson<ProfiledUser[]>(STORAGE_KEYS.users, []);
+export function getUsers(): User[] {
+  const users = compactItems(readJson<unknown>(STORAGE_KEYS.users, []), toStoredUser);
+  writeJson(STORAGE_KEYS.users, users);
+
+  return users;
 }
 
-export function saveUsers(users: ProfiledUser[]): void {
-  writeJson(STORAGE_KEYS.users, users);
+export function saveUsers(users: User[]): void {
+  writeJson(STORAGE_KEYS.users, compactItems(users, toStoredUser));
 }
 
 export function getSession(): Session | null {
@@ -66,11 +142,14 @@ export function clearSession(): void {
 }
 
 export function getHabits(): Habit[] {
-  return readJson<Habit[]>(STORAGE_KEYS.habits, []);
+  const habits = compactItems(readJson<unknown>(STORAGE_KEYS.habits, []), toStoredHabit);
+  writeJson(STORAGE_KEYS.habits, habits);
+
+  return habits;
 }
 
 export function saveHabits(habits: Habit[]): void {
-  writeJson(STORAGE_KEYS.habits, habits);
+  writeJson(STORAGE_KEYS.habits, compactItems(habits, toStoredHabit));
 }
 
 export function getValidSession(): Session | null {
@@ -87,7 +166,7 @@ export function getValidSession(): Session | null {
   return user ? session : null;
 }
 
-export function getUserById(userId: string): ProfiledUser | null {
+export function getUserById(userId: string): User | null {
   return getUsers().find((user) => user.id === userId) ?? null;
 }
 
@@ -100,7 +179,7 @@ export function saveHabitsForUser(userId: string, habitsForUser: Habit[]): void 
   saveHabits([...otherUsersHabits, ...habitsForUser]);
 }
 
-export function updateUser(updatedUser: ProfiledUser): void {
+export function updateUser(updatedUser: User): void {
   saveUsers(getUsers().map((user) => (user.id === updatedUser.id ? updatedUser : user)));
 }
 

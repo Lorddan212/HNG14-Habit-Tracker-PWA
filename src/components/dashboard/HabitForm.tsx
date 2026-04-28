@@ -25,8 +25,6 @@ export function HabitForm({ initialHabit, onCancel, onSave }: HabitFormProps) {
   const [error, setError] = useState<string | null>(null);
   const frequencyOptions: Array<{ label: string; value: Habit["frequency"] }> = [
     { label: "Daily", value: "daily" },
-    { label: "Weekly", value: "weekly" },
-    { label: "Monthly", value: "monthly" },
   ];
   const activeFrequency = frequencyOptions.find((option) => option.value === frequency) ?? frequencyOptions[0];
 
@@ -57,13 +55,13 @@ export function HabitForm({ initialHabit, onCancel, onSave }: HabitFormProps) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-magenta">
-            {initialHabit ? "Refine ritual" : "New ritual"}
+            {initialHabit ? "Refine Habit" : "New Habit"}
           </p>
           <h2 className="mt-2 font-display text-3xl font-black leading-tight tracking-normal text-ink">
-            {initialHabit ? "Edit this habit" : "Create a habit"}
+            {initialHabit ? "Edit This Habit" : "Create A Habit"}
           </h2>
           <p className="mt-2 text-sm font-semibold leading-6 text-ink-muted">
-            Give the habit a clear name, a useful cue, and a cadence that fits the way you actually live.
+            Give the habit a clear name and a useful cue. This tracker keeps the required cadence daily.
           </p>
         </div>
         <button
@@ -78,7 +76,7 @@ export function HabitForm({ initialHabit, onCancel, onSave }: HabitFormProps) {
 
       <div className="space-y-2">
         <label className="block text-sm font-extrabold text-ink" htmlFor="habit-name">
-          Habit name
+          Habit Name
         </label>
         <input
           className="input-shell focus-visible-ring"
@@ -178,7 +176,7 @@ export function HabitForm({ initialHabit, onCancel, onSave }: HabitFormProps) {
           type="submit"
         >
           <Save aria-hidden="true" size={18} />
-          Save habit
+          Save Habit
         </button>
         <button className="secondary-button focus-visible-ring min-h-12 px-5 py-3" onClick={onCancel} type="button">
           Cancel
