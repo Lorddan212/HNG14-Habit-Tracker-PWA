@@ -8,25 +8,17 @@ export function ServiceWorkerRegistration() {
       return;
     }
 
-    if (process.env.NODE_ENV !== "production") {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => {
-          registration.unregister();
+    const workerUrl = process.env.NODE_ENV === "production" ? "/sw.js" : "/sw-dev.js";
+
+    if (process.env.NODE_ENV !== "production" && "caches" in window) {
+      caches.keys().then((keys) => {
+        keys.forEach((key) => {
+          caches.delete(key);
         });
       });
-
-      if ("caches" in window) {
-        caches.keys().then((keys) => {
-          keys.forEach((key) => {
-            caches.delete(key);
-          });
-        });
-      }
-
-      return;
     }
 
-    navigator.serviceWorker.register("/sw.js").catch(() => {
+    navigator.serviceWorker.register(workerUrl, { updateViaCache: "none" }).catch(() => {
       // The app remains usable if registration is unavailable.
     });
   }, []);

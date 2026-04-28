@@ -5,20 +5,20 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getTodayDateString } from "@/lib/dates";
 import { toggleHabitCompletion } from "@/lib/habits";
-import { getUserDisplayName, getUserInitials, type ProfiledUser } from "@/lib/profile";
+import { getUserDisplayName, getUserInitials } from "@/lib/profile";
 import {
   clearSession,
   createId,
   deleteUserAccount,
-  getUsers,
   getHabitsForUser,
   getUserById,
+  getUsers,
   getValidSession,
-  saveSession,
   saveHabitsForUser,
+  saveSession,
   updateUser,
 } from "@/lib/storage";
-import type { Session } from "@/types/auth";
+import type { Session, User } from "@/types/auth";
 import type { Habit } from "@/types/habit";
 import { HabitCard } from "@/components/dashboard/HabitCard";
 import { HabitForm } from "@/components/dashboard/HabitForm";
@@ -27,7 +27,7 @@ import { ProfileSettings } from "@/components/dashboard/ProfileSettings";
 export function DashboardPage() {
   const router = useRouter();
   const [session, setSession] = useState<Session | null>(null);
-  const [activeUser, setActiveUser] = useState<ProfiledUser | null>(null);
+  const [activeUser, setActiveUser] = useState<User | null>(null);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [formOpen, setFormOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -127,7 +127,7 @@ export function DashboardPage() {
     router.push("/login");
   }
 
-  function handleProfileSave(values: { firstName: string; lastName: string; email: string; password: string }) {
+  function handleProfileSave(values: { email: string; password: string }) {
     if (!activeUser || !session) {
       return;
     }
@@ -149,12 +149,11 @@ export function DashboardPage() {
       return;
     }
 
-    const updatedUser: ProfiledUser = {
-      ...activeUser,
-      firstName: values.firstName,
-      lastName: values.lastName,
+    const updatedUser: User = {
+      id: activeUser.id,
       email: values.email,
       password: values.password,
+      createdAt: activeUser.createdAt,
     };
 
     updateUser(updatedUser);
@@ -308,11 +307,11 @@ export function DashboardPage() {
               <div className="rounded-[1.9rem] bg-white/76 p-5 shadow-[0_18px_60px_rgba(49,80,254,0.12)] backdrop-blur-[20px]">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-primary">Focus brief</p>
                 <h2 className="mt-3 font-display text-2xl font-black tracking-normal text-ink">
-                  Build Rituals With A Cadence That Feels Natural
+                  Build Daily Rituals That Feel Natural
                 </h2>
                 <p className="mt-3 text-sm font-semibold leading-6 text-ink-muted">
-                  Add daily, weekly, or monthly habits. Each card keeps today&apos;s completion clear while preserving your
-                  local streak history.
+                  Add one daily habit at a time. Each card keeps today&apos;s completion clear while preserving your local
+                  streak history.
                 </p>
               </div>
             )}

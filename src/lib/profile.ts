@@ -1,10 +1,5 @@
 import type { User } from "@/types/auth";
 
-export type ProfiledUser = User & {
-  firstName?: string;
-  lastName?: string;
-};
-
 function titleCase(value: string): string {
   return value
     .trim()
@@ -14,20 +9,9 @@ function titleCase(value: string): string {
     .join(" ");
 }
 
-export function getUserDisplayName(user: ProfiledUser | null | undefined): string {
+export function getUserDisplayName(user: User | null | undefined): string {
   if (!user) {
     return "Member";
-  }
-
-  const firstName = titleCase(user.firstName ?? "");
-  const lastInitial = titleCase(user.lastName ?? "").charAt(0);
-
-  if (firstName && lastInitial) {
-    return `${firstName} ${lastInitial}.`;
-  }
-
-  if (firstName) {
-    return firstName;
   }
 
   const emailName = user.email.split("@")[0] ?? "";
@@ -38,7 +22,7 @@ export function getUserDisplayName(user: ProfiledUser | null | undefined): strin
   return fallbackLastInitial ? `${fallbackFirstName} ${fallbackLastInitial}.` : fallbackFirstName;
 }
 
-export function getUserInitials(user: ProfiledUser | null | undefined): string {
+export function getUserInitials(user: User | null | undefined): string {
   const displayName = getUserDisplayName(user);
   const parts = displayName.replace(".", "").split(/\s+/).filter(Boolean);
 

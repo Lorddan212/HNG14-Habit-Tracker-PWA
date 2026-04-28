@@ -3,7 +3,7 @@ export type Habit = {
   userId: string;
   name: string;
   description: string;
-  frequency: "daily" | "weekly" | "monthly";
+  frequency: "daily";
   createdAt: string;
   completions: string[];
 };

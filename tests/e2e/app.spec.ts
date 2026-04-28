@@ -203,7 +203,7 @@ test.describe("Habit Tracker app", () => {
     await context.setOffline(true);
     await page.goto("/login", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByText("Habit Tracker")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Habit Tracker" })).toBeVisible();
     await context.setOffline(false);
   });
 });

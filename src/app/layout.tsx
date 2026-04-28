@@ -46,7 +46,7 @@ export default function RootLayout({
                   var isDevHost = ["localhost", "127.0.0.1", "192.168.137.1"].indexOf(window.location.hostname) !== -1;
                   if (!isDevHost || !("serviceWorker" in navigator)) return;
 
-                  var resetKey = "habit-tracker-dev-cache-reset-v2";
+                  var resetKey = "habit-tracker-dev-cache-reset-v3";
                   if (window.sessionStorage.getItem(resetKey) === "done") return;
 
                   var clearServiceWorkers = navigator.serviceWorker.getRegistrations()

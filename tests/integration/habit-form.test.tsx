@@ -51,13 +51,13 @@ describe("habit form", () => {
     await browserUser.type(screen.getByTestId("habit-name-input"), "Drink Water");
     await browserUser.type(screen.getByTestId("habit-description-input"), "Eight glasses");
     await browserUser.click(screen.getByTestId("habit-frequency-select"));
-    await browserUser.click(screen.getByTestId("habit-frequency-option-weekly"));
+    await browserUser.click(screen.getByTestId("habit-frequency-option-daily"));
     await browserUser.click(screen.getByTestId("habit-save-button"));
 
     const storedHabit = (JSON.parse(window.localStorage.getItem(STORAGE_KEYS.habits) ?? "[]") as Habit[])[0];
 
     expect(screen.getByTestId("habit-card-drink-water")).toBeInTheDocument();
-    expect(storedHabit.frequency).toBe("weekly");
+    expect(storedHabit.frequency).toBe("daily");
   });
 
   test("edits an existing habit and preserves immutable fields", async () => {
@@ -80,7 +80,7 @@ describe("habit form", () => {
     await browserUser.clear(screen.getByTestId("habit-description-input"));
     await browserUser.type(screen.getByTestId("habit-description-input"), "Ten pages");
     await browserUser.click(screen.getByTestId("habit-frequency-select"));
-    await browserUser.click(screen.getByTestId("habit-frequency-option-monthly"));
+    await browserUser.click(screen.getByTestId("habit-frequency-option-daily"));
     await browserUser.click(screen.getByTestId("habit-save-button"));
 
     const storedHabit = (JSON.parse(window.localStorage.getItem(STORAGE_KEYS.habits) ?? "[]") as Habit[])[0];
@@ -93,7 +93,7 @@ describe("habit form", () => {
       completions: ["2026-04-27"],
       name: "Read Books",
       description: "Ten pages",
-      frequency: "monthly",
+      frequency: "daily",
     });
   });
 
@@ -156,12 +156,8 @@ describe("habit form", () => {
 
     expect(screen.getByTestId("profile-settings")).toBeInTheDocument();
 
-    await browserUser.clear(screen.getByTestId("profile-first-name-input"));
-    await browserUser.type(screen.getByTestId("profile-first-name-input"), "Maya");
-    await browserUser.clear(screen.getByTestId("profile-last-name-input"));
-    await browserUser.type(screen.getByTestId("profile-last-name-input"), "Cole");
     await browserUser.clear(screen.getByTestId("profile-email-input"));
-    await browserUser.type(screen.getByTestId("profile-email-input"), "maya@example.com");
+    await browserUser.type(screen.getByTestId("profile-email-input"), "maya.cole@example.com");
     await browserUser.clear(screen.getByTestId("profile-password-input"));
     await browserUser.type(screen.getByTestId("profile-password-input"), "new-secret");
     await browserUser.click(screen.getByTestId("profile-save-button"));
@@ -170,15 +166,15 @@ describe("habit form", () => {
     const storedSession = JSON.parse(window.localStorage.getItem(STORAGE_KEYS.session) ?? "null");
 
     expect(await screen.findByText("Maya C.")).toBeInTheDocument();
-    expect(storedUsers[0]).toMatchObject({
-      firstName: "Maya",
-      lastName: "Cole",
-      email: "maya@example.com",
+    expect(storedUsers[0]).toEqual({
+      id: user.id,
+      createdAt: user.createdAt,
+      email: "maya.cole@example.com",
       password: "new-secret",
     });
     expect(storedSession).toEqual({
       userId: user.id,
-      email: "maya@example.com",
+      email: "maya.cole@example.com",
     });
   });
 

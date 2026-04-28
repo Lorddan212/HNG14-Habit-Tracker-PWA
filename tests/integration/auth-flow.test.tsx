@@ -30,7 +30,12 @@ describe("auth flow", () => {
     const session = JSON.parse(window.localStorage.getItem(STORAGE_KEYS.session) ?? "null");
 
     expect(users).toHaveLength(1);
-    expect(users[0].email).toBe("person@example.com");
+    expect(users[0]).toEqual({
+      id: users[0].id,
+      email: "person@example.com",
+      password: "secret",
+      createdAt: users[0].createdAt,
+    });
     expect(session).toEqual({
       userId: users[0].id,
       email: "person@example.com",

@@ -2,33 +2,27 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Eye, EyeOff, Save, Trash2, UserRound } from "lucide-react";
-import type { ProfiledUser } from "@/lib/profile";
+import type { User } from "@/types/auth";
 
 type ProfileSettingsValues = {
-  firstName: string;
-  lastName: string;
   email: string;
   password: string;
 };
 
 type ProfileSettingsProps = {
-  user: ProfiledUser;
+  user: User;
   error: string | null;
   onDeleteAccount: () => void;
   onSave: (values: ProfileSettingsValues) => void;
 };
 
 export function ProfileSettings({ user, error, onDeleteAccount, onSave }: ProfileSettingsProps) {
-  const [firstName, setFirstName] = useState(user.firstName ?? "");
-  const [lastName, setLastName] = useState(user.lastName ?? "");
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
   const [showPassword, setShowPassword] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   useEffect(() => {
-    setFirstName(user.firstName ?? "");
-    setLastName(user.lastName ?? "");
     setEmail(user.email);
     setPassword(user.password);
   }, [user]);
@@ -36,8 +30,6 @@ export function ProfileSettings({ user, error, onDeleteAccount, onSave }: Profil
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     onSave({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
       email: email.trim().toLowerCase(),
       password,
     });
@@ -56,42 +48,12 @@ export function ProfileSettings({ user, error, onDeleteAccount, onSave }: Profil
           <p className="text-xs font-black uppercase tracking-[0.16em] text-primary">Profile Settings</p>
           <h2 className="mt-2 font-display text-2xl font-black tracking-normal text-ink">Your Local Profile</h2>
           <p className="mt-2 text-sm font-semibold leading-6 text-ink-muted">
-            Update the name shown on your dashboard, change your login email, or reset your local password.
+            Change your login email, reset your local password, or delete this browser-only account.
           </p>
         </div>
       </div>
 
       <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div className="space-y-2">
-            <label className="block text-sm font-extrabold text-ink" htmlFor="profile-first-name">
-              First Name
-            </label>
-            <input
-              autoComplete="given-name"
-              className="input-shell focus-visible-ring"
-              data-testid="profile-first-name-input"
-              id="profile-first-name"
-              onChange={(event) => setFirstName(event.target.value)}
-              value={firstName}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-extrabold text-ink" htmlFor="profile-last-name">
-              Surname
-            </label>
-            <input
-              autoComplete="family-name"
-              className="input-shell focus-visible-ring"
-              data-testid="profile-last-name-input"
-              id="profile-last-name"
-              onChange={(event) => setLastName(event.target.value)}
-              value={lastName}
-            />
-          </div>
-        </div>
-
         <div className="space-y-2">
           <label className="block text-sm font-extrabold text-ink" htmlFor="profile-email">
             Email
