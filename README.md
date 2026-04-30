@@ -69,7 +69,7 @@ Habit completions are unique `YYYY-MM-DD` strings. Frequency is stored as `daily
 - The frequency dropdown is a custom React menu so its open state can be styled consistently across browsers while still storing the required `daily` value.
 - Profile settings are opened from the dashboard navbar settings button. To preserve the strict `User` localStorage shape, profile editing updates email and password; the dashboard greeting is derived from the email local-part.
 - Offline behavior is app-shell oriented; local data remains available through localStorage, but there is no server sync.
-- Typography uses Manrope and Inter through Next.js font optimization.
+- Typography uses Manrope and Inter font-family tokens with system fallbacks, avoiding build-time Google Fonts requests so the project can build offline.
 
 ## Required Test File Mapping
 
