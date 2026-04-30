@@ -109,7 +109,7 @@ export function LoginForm() {
       </form>
 
       <p className="mt-6 text-center text-sm font-semibold text-ink-muted">
-        Building Your First Ritual?{" "}
+        Building Your First Habit?{" "}
         <Link className="font-extrabold text-primary focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/20" href="/signup">
           Create An Account
         </Link>

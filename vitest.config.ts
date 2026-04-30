@@ -2,6 +2,8 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+Object.assign(process.env, { NODE_ENV: "test" });
+
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
